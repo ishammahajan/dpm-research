@@ -1,6 +1,0 @@
-pandas
-tqdm
-scikit-learn
-spacy
-wordcloud
-matplotlib

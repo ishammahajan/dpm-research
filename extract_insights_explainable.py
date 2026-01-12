@@ -157,8 +157,8 @@ def perform_topic_modeling(reviews, n_topics=10, n_top_words=10):
     """Discover topics using LDA"""
     print(f"\nPerforming topic modeling with {n_topics} topics...")
     
-    # Prepare text
-    texts = [r['content'] for r in reviews]
+    # Prepare text - filter out None or empty content
+    texts = [r['content'] for r in reviews if r.get('content')]
     
     # Vectorize
     vectorizer = CountVectorizer(
@@ -268,7 +268,7 @@ def generate_summary_report(df, topics):
     lines.append("\n\nDISCOVERED TOPICS (LDA Topic Modeling)")
     lines.append("-" * 80)
     for topic in topics:
-        lines.append(f"\nTopic {topic['topic_id']}: {topic['theme']}")
+        lines.append(f"\nTopic {topic['topic_id'] + 1}: {topic['theme']}")
         lines.append(f"  Keywords: {', '.join(topic['top_words'])}")
     
     # Star rating correlation
@@ -318,24 +318,24 @@ if __name__ == "__main__":
     print("\nSaving results...")
     
     # CSV with categorization
-    df.to_csv('pm_insights_explainable.csv', index=False)
+    df.to_csv('analysis/pm_insights_explainable.csv', index=False)
     
     # JSON with full details
-    df.to_json('pm_insights_explainable.json', orient='records', indent=2)
+    df.to_json('analysis/pm_insights_explainable.json', orient='records', indent=2)
     
     # Topics as JSON
-    with open('discovered_topics.json', 'w') as f:
+    with open('analysis/discovered_topics.json', 'w') as f:
         json.dump(topics, f, indent=2)
     
     # Generate and save summary report
     summary = generate_summary_report(df, topics)
     print(summary)
     
-    with open('pm_insights_summary.txt', 'w') as f:
+    with open('analysis/pm_insights_summary.txt', 'w') as f:
         f.write(summary)
     
     print(f"\n\n✓ Analysis complete!")
-    print(f"  Detailed results: pm_insights_explainable.csv / .json")
-    print(f"  Discovered topics: discovered_topics.json")
-    print(f"  Summary report: pm_insights_summary.txt")
+    print(f"  Detailed results: analysis/pm_insights_explainable.csv / .json")
+    print(f"  Discovered topics: analysis/discovered_topics.json")
+    print(f"  Summary report: analysis/pm_insights_summary.txt")
     print(f"\nAll insights are fully explainable - check CSV for matched patterns!")
